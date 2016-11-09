@@ -6,23 +6,20 @@ import java.sql.*;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import sqlCodes.MySqlConnect;
+import sqlCodes.SqlServerConnect;
+
 public class SqlEg {
 public static void main(String [] args)
 {
 	Connection conn = null;
 	Statement statement = null;
 	
-	String connectionString =  
-            "jdbc:sqlserver://ROOPESH-PC;"  
-            + "database=AdventureWorks2012;"  
-            + "integratedSecurity=true;"
-            + "loginTimeout=30;"; 
 	//connect to SQLSERVER
 
 	System.out.println("Data from MS SQLSERVER Database");
 	try{
-		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver").newInstance();
-		conn = DriverManager.getConnection(connectionString);
+		conn = SqlServerConnect.Connect("AdventureWorks2012");
 		
 		String selectSql = "select * from HumanResources.Department";  
         statement = conn.createStatement();  
@@ -33,7 +30,7 @@ public static void main(String [] args)
         {  
             System.out.println(resultSet.getString("Name"));
         }  
-		
+		conn.close();
 	}catch (Exception ex) {
 		ex.printStackTrace();
         // handle the error
@@ -42,9 +39,7 @@ public static void main(String [] args)
 	//connect to MySQL
 	System.out.println("Data from MYSQL Database");
 	try{
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
-		conn = DriverManager.getConnection("jdbc:mysql://localhost:8080/db1?useSSL=false","root","roopi");
-		
+		conn = MySqlConnect.Connect("db1", "root", "roopi");
 		String selectSql = "select * from album";  
         statement = conn.createStatement();  
         ResultSet resultSet = statement.executeQuery(selectSql);  
